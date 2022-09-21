@@ -1,0 +1,4 @@
+{
+  "baseUri": "https://jsonplaceholder.typicode.com/",
+  "postPath": "/posts"
+}
