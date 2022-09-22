@@ -1,0 +1,14 @@
+{
+  "requestedPost": {
+    "id": 99,
+    "userId": 10
+  },
+  "incorrectPost": {
+    "id": 150
+  },
+  "randomPost": {
+    "userId": 1
+  },
+  "headerName": "Content-Type",
+  "headerValue": "application/json; charset=UTF-8"
+}
