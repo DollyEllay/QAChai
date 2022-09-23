@@ -31,6 +31,17 @@ public class Post implements Comparable<Post> {
         return gson.fromJson(json, Post[].class);
     }
 
+    public static boolean isOrderAscending(Post[] posts) {
+        boolean isOrderAscending = true;
+        for (int i = 0; i < posts.length - 1; i++) {
+            if (posts[i].compareTo(posts[i + 1]) > 0) {
+                isOrderAscending = false;
+                break;
+            }
+        }
+        return isOrderAscending;
+    }
+
     public String toJson() {
         return gson.toJson(this);
     }

@@ -40,25 +40,18 @@ public class ApiTest {
             isResponseBodyJson = false;
         }
         Assert.assertTrue(isResponseBodyJson, "response body is not a valid json string");
-
-        boolean isOrderAscending = true;
-        for (int i = 0; i < posts.length - 1; i++) {
-            if (posts[i].compareTo(posts[i + 1]) > 0) {
-                isOrderAscending = false;
-                break;
-            }
-        }
-        Assert.assertTrue(isOrderAscending, "posts in response body are not in ascending order");
+        Assert.assertTrue(Post.isOrderAscending(posts), "posts in response body are not in ascending order");
 
         logger.debug("step 2");
-        int correctPostId = Integer.parseInt(testData.getValue("/step2/requestedPost/id").toString());
-        HttpResponse<String> postWithSpecificIdResponse = ApiUtils.getPostWithId(correctPostId);
+        int specificPostId = Integer.parseInt(testData.getValue("/step2/requestedPost/id").toString());
+        HttpResponse<String> postWithSpecificIdResponse = ApiUtils.getPostWithId(specificPostId);
         Assert.assertEquals(StatusCode.getByValue(postWithSpecificIdResponse.statusCode()), StatusCode.OK, "response status code is not 200");
+
         Post post = Post.createFromJson(postWithSpecificIdResponse.body());
         int correctUserId = Integer.parseInt(testData.getValue("/step2/requestedPost/userId").toString());
 
         Assert.assertEquals(post.getUserId(), correctUserId, "user id of received post is not " + correctUserId);
-        Assert.assertEquals(post.getId(), correctPostId, "id of received post is not " + correctPostId);
+        Assert.assertEquals(post.getId(), specificPostId, "id of received post is not " + specificPostId);
         Assert.assertFalse(StringUtils.isEmpty(post.getBody()), "post body should not be empty");
         Assert.assertFalse(StringUtils.isEmpty(post.getTitle()), "post title should not be empty");
 
@@ -86,14 +79,14 @@ public class ApiTest {
         HttpResponse<String> allUsersResponse = ApiUtils.getAllUsers();
         Assert.assertEquals(StatusCode.getByValue(allUsersResponse.statusCode()), StatusCode.OK, "response status code is not 200");
 
-        isResponseBodyJson = true;
+        boolean isAllUsersResponseBodyJson = true;
         User[] users = null;
         try {
             users = User.createArrayFromJson(allUsersResponse.body());
         } catch (Exception e) {
-            isResponseBodyJson = false;
+            isAllUsersResponseBodyJson = false;
         }
-        Assert.assertTrue(isResponseBodyJson, "response body is not a valid json string");
+        Assert.assertTrue(isAllUsersResponseBodyJson, "response body is not a valid json string");
 
         User userFromResponse = null;
         int userFromTestDataId = Integer.parseInt(testData.getValue("/step5And6/sampleUser/id").toString());
