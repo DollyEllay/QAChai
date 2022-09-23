@@ -1,14 +1,45 @@
 {
-  "requestedPost": {
-    "id": 99,
-    "userId": 10
-  },
-  "incorrectPost": {
-    "id": 150
-  },
-  "randomPost": {
-    "userId": 1
-  },
   "headerName": "Content-Type",
-  "headerValue": "application/json; charset=UTF-8"
+  "headerValue": "application/json; charset=UTF-8",
+  "step2": {
+    "requestedPost": {
+      "id": 99,
+      "userId": 10
+    }
+  },
+  "step3": {
+    "incorrectPost": {
+      "id": 150
+    }
+  },
+  "step4": {
+    "randomPost": {
+      "userId": 1
+    }
+  },
+  "step5And6": {
+    "sampleUser": {
+      "id": 5,
+      "name": "Chelsey Dietrich",
+      "username": "Kamren",
+      "email": "Lucio_Hettinger@annie.ca",
+      "address": {
+        "street": "Skiles Walks",
+        "suite": "Suite 351",
+        "city": "Roscoeview",
+        "zipcode": 33263,
+        "geo": {
+          "lat": "-31.8129",
+          "lng": "62.5342"
+        }
+      },
+      "phone": "(254)954-1289",
+      "website": "demarco.info",
+      "company": {
+        "name": "Keebler LLC",
+        "catchPhrase": "User-centric fault-tolerant solution",
+        "bs": "revolutionize end-to-end systems"
+      }
+    }
+  }
 }

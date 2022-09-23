@@ -8,6 +8,7 @@ import org.apache.commons.lang.RandomStringUtils;
 public class Post implements Comparable<Post> {
     private static final ISettingsFile testData = new JsonSettingsFile("TestData.json");
     private static final Gson gson = new Gson();
+
     private Integer userId;
     private Integer id;
     private String title;
@@ -15,7 +16,7 @@ public class Post implements Comparable<Post> {
 
     public static Post createRandomPost() {
         Post randomPost = new Post();
-        randomPost.setUserId(Integer.parseInt(testData.getValue("/randomPost/userId").toString()));
+        randomPost.setUserId(Integer.parseInt(testData.getValue("/step4/randomPost/userId").toString()));
         randomPost.setTitle(RandomStringUtils.randomAlphabetic(15));
         randomPost.setBody(RandomStringUtils.randomAlphabetic(50));
 

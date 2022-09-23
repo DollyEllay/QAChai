@@ -19,8 +19,4 @@ public enum StatusCode {
         }
         throw new UnsupportedOperationException("This status code is not implemented and should not come up " + value);
     }
-
-    public int getValue() {
-        return value;
-    }
 }

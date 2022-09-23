@@ -12,32 +12,32 @@ public class UriUtils {
     private static final ISettingsFile configData = new JsonSettingsFile("ConfigData.json");
     private static final Logger logger = Logger.getInstance();
 
-    public static URI getPostsUri() {
-        URI getAllPostsUri = null;
+    private static URI buildUri(String path) {
+        URI resultUri = null;
 
         try {
-            getAllPostsUri = new URIBuilder(configData.getValue("/baseUri").toString())
-                    .setPath(configData.getValue("/postPath").toString())
+            resultUri = new URIBuilder(configData.getValue("/baseUri").toString())
+                    .setPath(path)
                     .build();
         } catch (URISyntaxException e) {
             logger.error("Error creating URI: " + e.getMessage());
         }
-        logger.debug("getAllPostsUri %s", getAllPostsUri.toString());
-        return getAllPostsUri;
+        return resultUri;
+    }
+
+    public static URI getPostsUri() {
+        return buildUri(configData.getValue("/postPath").toString());
     }
 
     public static URI uriToGetPostWithId(int postId) {
-        URI uriToGetPostWithId = null;
+        return buildUri(configData.getValue("/postPath").toString() + postId);
+    }
 
-        try {
-            uriToGetPostWithId = new URIBuilder(configData.getValue("/baseUri").toString())
-                    .setPath(configData.getValue("/postPath").toString() + String.valueOf(postId))
-                    .build();
-        } catch (URISyntaxException e) {
-            logger.error("Error creating URI: " + e.getMessage());
-        }
-        logger.debug("uriToGetPostWithId %s", uriToGetPostWithId.toString());
+    public static URI getUsersUri() {
+        return buildUri(configData.getValue("/usersPath").toString());
+    }
 
-        return uriToGetPostWithId;
+    public static URI uriToGetUserWithId(int userId) {
+        return buildUri(configData.getValue("/usersPath").toString() + userId);
     }
 }

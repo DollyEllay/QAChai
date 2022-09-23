@@ -6,6 +6,7 @@ import aquality.selenium.core.utilities.JsonSettingsFile;
 import models.Post;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -15,10 +16,11 @@ public class ApiUtils {
     private static final Logger logger = Logger.getInstance();
     private static final ISettingsFile testData = new JsonSettingsFile("TestData.json");
 
-    public static HttpResponse<String> getAllPosts() {
+    private static HttpResponse<String> getRequest(URI uri) {
+        logger.info("Sending GET request to the uri: " + uri);
         HttpResponse<String> response = null;
         HttpRequest getAllPostsRequest = HttpRequest.newBuilder()
-                .uri(UriUtils.getPostsUri())
+                .uri(uri)
                 .GET()
                 .build();
 
@@ -31,26 +33,12 @@ public class ApiUtils {
         return response;
     }
 
-    public static HttpResponse<String> getPostWithId(int postId) {
+    private static HttpResponse<String> postRequest(URI uri, HttpRequest.BodyPublisher body) {
+        logger.info("Sending POST request to the uri: " + uri);
         HttpResponse<String> response = null;
         HttpRequest getAllPostsRequest = HttpRequest.newBuilder()
-                .uri(UriUtils.uriToGetPostWithId(postId))
-                .GET()
-                .build();
-
-        try {
-            response = HttpClient.newHttpClient().send(getAllPostsRequest, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            logger.error("error sending http request: " + e.getMessage());
-        }
-        return response;
-    }
-
-    public static HttpResponse<String> sendPost(Post post) {
-        HttpResponse<String> response = null;
-        HttpRequest getAllPostsRequest = HttpRequest.newBuilder()
-                .uri(UriUtils.getPostsUri())
-                .POST(HttpRequest.BodyPublishers.ofString(post.toJson()))
+                .uri(uri)
+                .POST(body)
                 .header(testData.getValue("/headerName").toString(), testData.getValue("/headerValue").toString())
                 .build();
 
@@ -60,5 +48,25 @@ public class ApiUtils {
             logger.error("error sending http request: " + e.getMessage());
         }
         return response;
+    }
+
+    public static HttpResponse<String> getAllPosts() {
+        return getRequest(UriUtils.getPostsUri());
+    }
+
+    public static HttpResponse<String> getPostWithId(int postId) {
+        return getRequest(UriUtils.uriToGetPostWithId(postId));
+    }
+
+    public static HttpResponse<String> sendPost(Post post) {
+        return postRequest(UriUtils.getPostsUri(), HttpRequest.BodyPublishers.ofString(post.toJson()));
+    }
+
+    public static HttpResponse<String> getAllUsers() {
+        return getRequest(UriUtils.getUsersUri());
+    }
+
+    public static HttpResponse<String> getUserWithId(int userId) {
+        return getRequest(UriUtils.uriToGetUserWithId(userId));
     }
 }
