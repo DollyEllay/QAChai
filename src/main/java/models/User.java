@@ -16,14 +16,6 @@ public class User {
     private String website;
     private UserCompany company;
 
-    public static User[] createArrayFromJson(String json) {
-        return gson.fromJson(json, User[].class);
-    }
-
-    public static User createFromJson(String json) {
-        return gson.fromJson(json, User.class);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, name, username, email, phone, website, address, company);

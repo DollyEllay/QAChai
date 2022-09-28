@@ -14,21 +14,13 @@ public class Post implements Comparable<Post> {
     private String title;
     private String body;
 
-    public static Post createRandomPost() {
+    public static Post createTestPost() {
         Post randomPost = new Post();
         randomPost.setUserId(Integer.parseInt(testData.getValue("/step4/randomPost/userId").toString()));
         randomPost.setTitle(RandomStringUtils.randomAlphabetic(15));
         randomPost.setBody(RandomStringUtils.randomAlphabetic(50));
 
         return randomPost;
-    }
-
-    public static Post createFromJson(String json) {
-        return gson.fromJson(json, Post.class);
-    }
-
-    public static Post[] createArrayFromJson(String json) {
-        return gson.fromJson(json, Post[].class);
     }
 
     public static boolean isOrderAscending(Post[] posts) {
