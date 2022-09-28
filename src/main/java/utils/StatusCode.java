@@ -5,7 +5,7 @@ public enum StatusCode {
     CREATED(201),
     NOT_FOUND(404);
 
-    private final int value;
+    public final int value;
 
     StatusCode(int value) {
         this.value = value;

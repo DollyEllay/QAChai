@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 
 public class UriUtils {
     private static final ISettingsFile configData = new JsonSettingsFile("ConfigData.json");
+    private static final ISettingsFile endpointsData = new JsonSettingsFile("ApiEndpointsData.json");
     private static final Logger logger = Logger.getInstance();
 
     private static URI buildUri(String path) {
@@ -26,18 +27,18 @@ public class UriUtils {
     }
 
     public static URI getPostsUri() {
-        return buildUri(configData.getValue("/postPath").toString());
+        return buildUri(endpointsData.getValue("/postPath").toString());
     }
 
     public static URI uriToGetPostWithId(int postId) {
-        return buildUri(configData.getValue("/postPath").toString() + postId);
+        return buildUri(endpointsData.getValue("/postPath").toString() + postId);
     }
 
     public static URI getUsersUri() {
-        return buildUri(configData.getValue("/usersPath").toString());
+        return buildUri(endpointsData.getValue("/usersPath").toString());
     }
 
     public static URI uriToGetUserWithId(int userId) {
-        return buildUri(configData.getValue("/usersPath").toString() + userId);
+        return buildUri(endpointsData.getValue("/usersPath").toString() + userId);
     }
 }

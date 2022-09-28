@@ -5,7 +5,7 @@ import aquality.selenium.core.utilities.JsonSettingsFile;
 import com.google.gson.Gson;
 import org.apache.commons.lang.RandomStringUtils;
 
-public class Post implements Comparable<Post> {
+public class Post {
     private static final ISettingsFile testData = new JsonSettingsFile("TestData.json");
     private static final Gson gson = new Gson();
 
@@ -21,17 +21,6 @@ public class Post implements Comparable<Post> {
         randomPost.setBody(RandomStringUtils.randomAlphabetic(50));
 
         return randomPost;
-    }
-
-    public static boolean isOrderAscending(Post[] posts) {
-        boolean isOrderAscending = true;
-        for (int i = 0; i < posts.length - 1; i++) {
-            if (posts[i].compareTo(posts[i + 1]) > 0) {
-                isOrderAscending = false;
-                break;
-            }
-        }
-        return isOrderAscending;
     }
 
     public String toJson() {
@@ -68,10 +57,5 @@ public class Post implements Comparable<Post> {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    @Override
-    public int compareTo(Post otherPost) {
-        return Integer.compare(getId(), otherPost.getId());
     }
 }

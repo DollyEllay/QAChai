@@ -1,58 +1,49 @@
-import aquality.selenium.core.logging.Logger;
-import aquality.selenium.core.utilities.ISettingsFile;
-import aquality.selenium.core.utilities.JsonSettingsFile;
-import com.google.gson.Gson;
+import base.ApiTestBase;
+import com.google.common.collect.Ordering;
 import com.google.gson.JsonSyntaxException;
 import models.Post;
 import models.User;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import utils.ApiUtils;
 import utils.StatusCode;
 
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 
-public class ApiTest {
-
-    private static final ISettingsFile testData = new JsonSettingsFile("TestData.json");
-    private static final Gson gson = new Gson();
-    private final Logger logger = Logger.getInstance();
-
-    @BeforeMethod
-    private static void testSetup() {
-        Configurator.setRootLevel(Level.DEBUG);
-    }
+public class ApiTest extends ApiTestBase {
 
     @Test
     public void apiTest() {
         logger.debug("step 1");
 
         HttpResponse<String> allPostsResponse = ApiUtils.getAllPosts();
-        Assert.assertEquals(StatusCode.getByValue(allPostsResponse.statusCode()), StatusCode.OK, "response status code is not 200");
+        Assert.assertEquals(allPostsResponse.statusCode(), StatusCode.OK.value, "response status code is not 200");
 
-        boolean isResponseBodyJson = true;
         Post[] posts = null;
         try {
             posts = gson.fromJson(allPostsResponse.body(), Post[].class);
         } catch (JsonSyntaxException e) {
-            isResponseBodyJson = false;
+            Assert.fail("response body is not a valid json string");
         }
-        Assert.assertTrue(isResponseBodyJson, "response body is not a valid json string");
-        Assert.assertTrue(Post.isOrderAscending(posts), "posts in response body are not in ascending order");
+        Ordering<Post> byIdOrdering = new Ordering<Post>() {
+            @Override
+            public int compare(Post post1, Post post2) {
+                return Integer.compare(post1.getId(), post2.getId());
+            }
+        };
+        Assert.assertTrue(byIdOrdering.isOrdered(Arrays.asList(posts)), "posts in response body are not in ascending order");
 
         logger.debug("step 2");
         int specificPostId = Integer.parseInt(testData.getValue("/step2/requestedPost/id").toString());
         HttpResponse<String> postWithSpecificIdResponse = ApiUtils.getPostWithId(specificPostId);
-        Assert.assertEquals(StatusCode.getByValue(postWithSpecificIdResponse.statusCode()), StatusCode.OK, "response status code is not 200");
+        Assert.assertEquals(postWithSpecificIdResponse.statusCode(), StatusCode.OK.value, "response status code is not 200");
 
         Post post = gson.fromJson(postWithSpecificIdResponse.body(), Post.class);
-        int correctUserId = Integer.parseInt(testData.getValue("/step2/requestedPost/userId").toString());
+        int expectedUserId = Integer.parseInt(testData.getValue("/step2/requestedPost/userId").toString());
 
-        Assert.assertEquals(post.getUserId(), correctUserId, "user id of received post is not " + correctUserId);
+        Assert.assertEquals(post.getUserId(), expectedUserId, "user id of received post is not " + expectedUserId);
         Assert.assertEquals(post.getId(), specificPostId, "id of received post is not " + specificPostId);
         Assert.assertFalse(StringUtils.isEmpty(post.getBody()), "post body should not be empty");
         Assert.assertFalse(StringUtils.isEmpty(post.getTitle()), "post title should not be empty");
@@ -60,7 +51,7 @@ public class ApiTest {
         logger.debug("step 3");
         int incorrectPostId = Integer.parseInt(testData.getValue("/step3/incorrectPost/id").toString());
         HttpResponse<String> nonExistingPostResponse = ApiUtils.getPostWithId(incorrectPostId);
-        Assert.assertEquals(StatusCode.getByValue(nonExistingPostResponse.statusCode()), StatusCode.NOT_FOUND,
+        Assert.assertEquals(nonExistingPostResponse.statusCode(), StatusCode.NOT_FOUND.value,
                 "response status code is not 404");
 
         Post nonExistingPost = gson.fromJson(nonExistingPostResponse.body(), Post.class);
@@ -69,7 +60,7 @@ public class ApiTest {
         logger.debug("step 4");
         Post randomPost = Post.createTestPost();
         HttpResponse<String> createPostResponse = ApiUtils.sendPost(randomPost);
-        Assert.assertEquals(StatusCode.getByValue(createPostResponse.statusCode()), StatusCode.CREATED, "response status code is not 201");
+        Assert.assertEquals(createPostResponse.statusCode(), StatusCode.CREATED.value, "response status code is not 201");
 
         Post createdPost = gson.fromJson(createPostResponse.body(), Post.class);
         Assert.assertEquals(randomPost.getUserId(), createdPost.getUserId(), "posted userId does not match the one in confirmation response");
@@ -79,16 +70,14 @@ public class ApiTest {
 
         logger.debug("step 5");
         HttpResponse<String> allUsersResponse = ApiUtils.getAllUsers();
-        Assert.assertEquals(StatusCode.getByValue(allUsersResponse.statusCode()), StatusCode.OK, "response status code is not 200");
+        Assert.assertEquals(allUsersResponse.statusCode(), StatusCode.OK.value, "response status code is not 200");
 
-        boolean isAllUsersResponseBodyJson = true;
         User[] users = null;
         try {
             users = gson.fromJson(allUsersResponse.body(), User[].class);
         } catch (Exception e) {
-            isAllUsersResponseBodyJson = false;
+            Assert.fail("response body is not a valid json string");
         }
-        Assert.assertTrue(isAllUsersResponseBodyJson, "response body is not a valid json string");
 
         User userFromResponse = null;
         int userFromTestDataId = Integer.parseInt(testData.getValue("/step5And6/sampleUser/id").toString());
@@ -103,7 +92,7 @@ public class ApiTest {
 
         logger.debug("step 6");
         HttpResponse<String> userWithIdResponse = ApiUtils.getUserWithId(userFromTestDataId);
-        Assert.assertEquals(StatusCode.getByValue(userWithIdResponse.statusCode()), StatusCode.OK, "response status code is not 200");
+        Assert.assertEquals(userWithIdResponse.statusCode(), StatusCode.OK.value, "response status code is not 200");
 
         User specificUserRequestedById = gson.fromJson(userWithIdResponse.body(), User.class);
         Assert.assertEquals(sampleUser, specificUserRequestedById);
