@@ -15,7 +15,7 @@ public class ApiUtils {
     private static final Logger logger = Logger.getInstance();
     private static final ISettingsFile testData = new JsonSettingsFile("TestData.json");
 
-    public static HttpResponse<String> getRequest(URI uri) {
+    protected static HttpResponse<String> getRequest(URI uri) {
         logger.info("Sending GET request to the uri: " + uri);
         HttpResponse<String> response = null;
         HttpRequest getAllPostsRequest = HttpRequest.newBuilder()
@@ -32,7 +32,7 @@ public class ApiUtils {
         return response;
     }
 
-    public static HttpResponse<String> postRequest(URI uri, HttpRequest.BodyPublisher body) {
+    protected static HttpResponse<String> postRequest(URI uri, HttpRequest.BodyPublisher body) {
         logger.info("Sending POST request to the uri: " + uri);
         HttpResponse<String> response = null;
         HttpRequest getAllPostsRequest = HttpRequest.newBuilder()

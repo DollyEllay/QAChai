@@ -10,13 +10,4 @@ public enum StatusCode {
     StatusCode(int value) {
         this.value = value;
     }
-
-    public static StatusCode getByValue(int value) {
-        for (StatusCode code : values()) {
-            if (code.value == value) {
-                return code;
-            }
-        }
-        throw new UnsupportedOperationException("This status code is not implemented and should not come up " + value);
-    }
 }

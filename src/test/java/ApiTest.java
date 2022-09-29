@@ -2,12 +2,13 @@ import base.ApiTestBase;
 import com.google.gson.JsonSyntaxException;
 import models.Post;
 import models.User;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import utils.ApiAccessPoints;
 import utils.ComparatorUtils;
 import utils.StatusCode;
+import utils.TestDataUtils;
 
 import java.net.http.HttpResponse;
 import java.util.Arrays;
@@ -52,14 +53,14 @@ public class ApiTest extends ApiTestBase {
         Assert.assertTrue(StringUtils.isEmpty(nonExistingPost.body), "response body should be empty");
 
         logger.debug("step 4");
-        Post randomPost = Post.createTestPost();
-        HttpResponse<String> createPostResponse = ApiAccessPoints.sendPost(randomPost);
+        Post postFromTestData = TestDataUtils.createTestPost();
+        HttpResponse<String> createPostResponse = ApiAccessPoints.sendPostJson(gson.toJson(postFromTestData));
         Assert.assertEquals(createPostResponse.statusCode(), StatusCode.CREATED.value, "response status code is not 201");
 
         Post createdPost = gson.fromJson(createPostResponse.body(), Post.class);
-        Assert.assertEquals(randomPost.userId, createdPost.userId, "posted userId does not match the one in confirmation response");
-        Assert.assertEquals(randomPost.body, createdPost.body, "posted body does not match the one in confirmation response");
-        Assert.assertEquals(randomPost.title, createdPost.title, "posted title does not match the one in confirmation response");
+        Assert.assertEquals(postFromTestData.userId, createdPost.userId, "posted userId does not match the one in confirmation response");
+        Assert.assertEquals(postFromTestData.body, createdPost.body, "posted body does not match the one in confirmation response");
+        Assert.assertEquals(postFromTestData.title, createdPost.title, "posted title does not match the one in confirmation response");
         Assert.assertNotNull(createdPost.id, "post id was not present in response");
 
         logger.debug("step 5");

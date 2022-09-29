@@ -1,7 +1,5 @@
 package utils;
 
-import models.Post;
-
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
@@ -14,8 +12,8 @@ public class ApiAccessPoints {
         return ApiUtils.getRequest(UriUtils.uriToGetPostWithId(postId));
     }
 
-    public static HttpResponse<String> sendPost(Post post) {
-        return ApiUtils.postRequest(UriUtils.getPostsUri(), HttpRequest.BodyPublishers.ofString(post.toJson()));
+    public static HttpResponse<String> sendPostJson(String postJson) {
+        return ApiUtils.postRequest(UriUtils.getPostsUri(), HttpRequest.BodyPublishers.ofString(postJson));
     }
 
     public static HttpResponse<String> getAllUsers() {
